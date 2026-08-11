@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Infinity Crasher</title>
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Space+Grotesk:wght@500;700&family=Orbitron:wght@500;700;900&family=Rajdhani:wght@300;500;600;700&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    /* ================= LOGIN STYLES ================= */
+    :root {
+      --primary: #FF6B9D;
+      --secondary: #A78BFA;
+      --accent: #60EFFF;
+      --bg-dark: #0A0A1F;
+      --bg-card: rgba(20, 20, 45, 0.6);
+      --text-main: #FFFFFF;
+      --text-muted: #B4B4C8;
+      
+      /* Dashboard Theme Vars */
+      --dash-bg: #050508;
+      --dash-primary: #00f2ff;
+      --dash-secondary: #bc13fe;
+      --dash-accent: #ff2a6d;
+      --dash-card-bg: rgba(20, 20, 25, 0.4);
+      --dash-border: 1px solid rgba(255, 255, 255, 0.08);
+      --max-width: 1000px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Screen Wrapper Control */
+    #login-page {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      width: 100%;
+      position: relative;
+      z-index: 10;
+    }
+
+    #dashboard-page {
+      display: none; /* Sembunyi default */
+      min-height: 100vh;
+      width: 100%;
+      padding-bottom: 110px;
+      background-color: var(--dash-bg);
+      background-image: url('https://files.catbox.moe/l2gjof.jpg');
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Background Animation (Login) */
+    .bg-anime {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(255, 107, 157, 0.15), transparent 50%),
+        radial-gradient(circle at 80% 50%, rgba(167, 139, 250, 0.15), transparent 50%),
+        radial-gradient(circle at 50% 80%, rgba(96, 239, 255, 0.1), transparent 50%);
+      z-index: 0; animation: bgShift 15s ease-in-out infinite alternate;
+    }
+    @keyframes bgShift {
+      0% { transform: scale(1) rotate(0deg); }
+      100% { transform: scale(1.1) rotate(5deg); }
+    }
+
+    .sakura {
+      position: fixed; width: 10px; height: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 50% 0; opacity: 0.3; animation: fall linear infinite; z-index: 1;
+    }
+    @keyframes fall {
+      0% { transform: translateY(-10vh) rotate(0deg); }
+      100% { transform: translateY(110vh) rotate(360deg); }
+    }
+
+    .grid-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 30px 30px; z-index: 1; pointer-events: none;
+    }
+
+    /* Card Login */
+    .login-card {
+      position: relative; z-index: 10; width: 90%; max-width: 420px;
+      padding: 50px 40px; background: var(--bg-card); backdrop-filter: blur(30px);
+      border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4), 0 0 1px rgba(255, 107, 157, 0.5);
+      animation: cardEntry 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes cardEntry { to { opacity: 1; transform: translateY(0); } }
+
+    .login-card::before {
+      content: ''; position: absolute; inset: 0; border-radius: 24px; padding: 1px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0.6;
+      animation: borderGlow 3s ease-in-out infinite;
+    }
+    @keyframes borderGlow { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+
+    .logo-section { text-align: center; margin-bottom: 35px; }
+    
+    /* Styling Video MP4 */
+    .logo-video {
+      width: 110px; height: 110px; border-radius: 50%; object-fit: cover;
+      border: 3px solid rgba(255, 107, 157, 0.3); padding: 3px; margin-bottom: 20px;
+      animation: logoFloat 3s ease-in-out infinite; box-shadow: 0 10px 40px rgba(255, 107, 157, 0.3);
+    }
+    @keyframes logoFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+    h1.login-title {
+      font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 8px; letter-spacing: -1px;
+    }
+    .subtitle { font-size: 14px; color: var(--text-muted); font-weight: 300; letter-spacing: 2px; }
+
+    .error-message {
+      display: none; background: rgba(255, 107, 157, 0.1); border-left: 3px solid var(--primary);
+      border-radius: 12px; padding: 15px; margin-bottom: 25px; font-size: 13px; color: var(--primary);
+    }
+
+    .input-group { position: relative; margin-bottom: 25px; }
+    .input-group label { display: block; font-size: 12px; color: var(--accent); margin-bottom: 10px; font-weight: 600; letter-spacing: 1px; }
+    .input-wrapper { position: relative; }
+    input {
+      width: 100%; padding: 16px 20px 16px 50px; background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; color: var(--text-main);
+      font-family: 'Poppins', sans-serif; font-size: 16px; outline: none; transition: 0.3s;
+    }
+    input:focus { border-color: var(--primary); background: rgba(0, 0, 0, 0.5); box-shadow: 0 0 0 4px rgba(255, 107, 157, 0.1); }
+    .input-wrapper i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 18px; }
+
+    .btn-login {
+      width: 100%; padding: 18px; background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border: none; border-radius: 14px; color: var(--text-main); font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px; font-weight: 700; letter-spacing: 1px; cursor: pointer; transition: 0.3s;
+      box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+    }
+    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(255, 107, 157, 0.4); }
+
+    .footer { margin-top: 30px; text-align: center; }
+    .footer a {
+      color: var(--text-muted); text-decoration: none; font-size: 13px; display: inline-flex;
+      align-items: center; gap: 8px; padding: 10px 20px; border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.3s;
+    }
+    .credits { margin-top: 20px; font-size: 11px; color: #666; text-align: center; }
+    .credits a { color: var(--accent); text-decoration: none; }
+
+    /* ================= DASHBOARD STYLES ================= */
+    #dashboard-page::before {
+      content: ''; position: fixed; inset: 0;
+      background: linear-gradient(to bottom, rgba(5,5,8,0.9), rgba(5,5,8,0.7)); z-index: -1;
+    }
+    #dashboard-page::after {
+      content: ''; position: fixed; inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+      background-size: 100% 2px, 3px 100%; pointer-events: none; z-index: -1;
+    }
+
+    .container { width: 100%; max-width: var(--max-width); margin: 0 auto; padding: 20px; }
+    .dashboard-grid { display: flex; flex-direction: column; gap: 25px; }
+
+    .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 0 25px 0; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; }
+    .profile-wrapper { display: flex; align-items: center; gap: 15px; cursor: pointer; }
+    .avatar { width: 50px; height: 50px; clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); background: var(--dash-primary); padding: 2px; }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); background: #000; }
+    .user-info h2 { font-size: 20px; font-weight: 700; color: #fff; line-height: 1; font-family: 'Orbitron'; letter-spacing: 1px; }
+    .user-info p { font-size: 10px; color: var(--dash-primary); letter-spacing: 2px; margin-top: 4px; font-weight: 600; }
+
+    .header-btn { width: 45px; height: 45px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; cursor: pointer; position: relative; }
+    .notification-badge { position: absolute; top: 8px; right: 8px; width: 6px; height: 6px; background: var(--dash-accent); border-radius: 50%; box-shadow: 0 0 8px var(--dash-accent); }
+
+    .hero-card { padding: 25px; border: 1px solid rgba(0, 242, 255, 0.2); background: linear-gradient(135deg, rgba(0, 242, 255, 0.05), rgba(188, 19, 254, 0.05)); overflow: hidden; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); position: relative; }
+    .hero-card::before { content: 'SYSTEM // ONLINE'; position: absolute; top: 10px; right: 15px; font-size: 9px; letter-spacing: 2px; color: var(--dash-primary); opacity: 0.7; font-family: 'Orbitron'; }
+    .hero-content { display: flex; flex-direction: column; gap: 20px; }
+    .status-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; background: rgba(0, 242, 255, 0.1); border: 1px solid var(--dash-primary); color: var(--dash-primary); font-size: 10px; font-weight: 700; letter-spacing: 1px; align-self: flex-start; }
+    .balance-section .amount { font-size: 36px; font-weight: 800; font-family: 'Rajdhani', sans-serif; background: linear-gradient(to bottom, #fff, #aaa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-top: 5px; }
+    .hero-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; }
+    .h-stat { text-align: center; }
+    .h-stat span { font-size: 9px; color: #8899a6; display: block; margin-bottom: 2px; }
+    .h-stat strong { font-size: 16px; color: #fff; font-family: 'Orbitron'; }
+
+    .section-header { margin: 30px 0 15px 0; display: flex; align-items: center; gap: 10px; }
+    .section-icon { color: var(--dash-secondary); font-size: 14px; }
+    .section-title { font-size: 14px; color: #fff; font-weight: 700; letter-spacing: 2px; font-family: 'Orbitron'; }
+    .line-deco { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(255,255,255,0.2), transparent); }
+
+    .news-wrapper { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; scrollbar-width: none; }
+    .news-wrapper::-webkit-scrollbar { display: none; }
+    .news-card { flex: 0 0 85%; height: 160px; position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+    .news-card img { width: 100%; height: 100%; object-fit: cover; }
+    .card-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, #000 10%, transparent); padding: 15px; }
+    .card-title { font-family: 'Orbitron'; font-size: 14px; color: #fff; }
+    .card-sub { font-size: 10px; color: var(--dash-primary); letter-spacing: 1px; }
+
+    .account-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .stat-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 15px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%); }
+    .stat-card.main { grid-column: span 2; background: linear-gradient(90deg, rgba(188, 19, 254, 0.1), rgba(0,0,0,0)); border-left: 2px solid var(--dash-secondary); }
+    .stat-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .stat-label { font-size: 10px; color: #8899a6; text-transform: uppercase; letter-spacing: 1px; }
+    .stat-value { font-family: 'Orbitron'; font-size: 18px; color: #fff; }
+    .stat-bar { height: 2px; width: 100%; background: #222; margin-top: 10px; position: relative; }
+    .stat-bar-fill { height: 100%; position: absolute; }
+
+    .nav-container { position: fixed; bottom: 25px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 100; pointer-events: none; }
+    .floating-nav { pointer-events: auto; background: rgba(10, 10, 15, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.15); padding: 10px 30px; border-radius: 50px; display: flex; gap: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .nav-link { color: #666; text-decoration: none; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+    .nav-link i { font-size: 20px; }
+    .nav-link.active { color: var(--dash-primary); }
+
+    @media (min-width: 1024px) {
+      .news-wrapper { display: grid; grid-template-columns: repeat(3, 1fr); }
+      .news-card { width: 100%; height: 180px; }
+      .account-grid { grid-template-columns: repeat(3, 1fr); }
+      .stat-card.main { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-anime" id="login-bg"></div>
+  <div class="grid-overlay"></div>
+
+  <!-- ================= 1. PAGE LOGIN ================= -->
+  <div id="login-page">
+    <div class="login-card">
+      <div class="logo-section">
+        <!-- Video pengganti logo -->
+        <video class="logo-video" autoplay loop muted playsinline>
+          <source src="https://files.catbox.moe/v3ih6m.mp4" type="video/mp4">
+        </video>
+
+        <!-- Audio terpisah -->
+        <audio id="loginAudio" loop preload="auto">
+          <source src="https://files.catbox.moe/vjjyr5.mp3" type="audio/mpeg">
+        </audio>
+
+        <h1 class="login-title">Infinity Crasher</h1>
+        <p class="subtitle">Infinity ACCESS v1.0</p>
+      </div>
+
+      <div class="error-message" id="errorMessage">
+        <i class="fas fa-exclamation-circle"></i>
+        <span id="errorText">Invalid credentials!</span>
+      </div>
+
+      <form id="loginForm">
+        <div class="input-group">
+          <label>ENTER YOUR USERNAME</label>
+          <div class="input-wrapper">
+            <input type="text" id="usernameInput" name="username" placeholder="Acces Username" required autocomplete="off">
+            <i class="fas fa-user"></i>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>ENTER YOUR KEY</label>
+          <div class="input-wrapper">
+            <input type="password" name="key" id="key" placeholder="Access Key" required>
+            <i class="fas fa-key"></i>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-login">
+          <span id="btnText">CLICK TO ACCES</span>
+        </button>
+
+        <div class="footer">
+          <a href="https://t.me/availablesecs" target="_blank">
+            <i class="fab fa-telegram"></i> Join Infinity Crasher Community
+          </a>
+        </div>
+
+        <div class="credits">
+          Developed by <a href="https://t.me/VynnStore" target="_blank">@VynnStore</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= 2. PAGE DASHBOARD ================= -->
+  <div id="dashboard-page">
+    <div class="container">
+      <header class="header">
+        <div class="profile-wrapper" id="profile">
+          <div class="avatar">
+            <img src="https://files.catbox.moe/i5gdky.jpg" alt="User">
+          </div>
+          <div class="user-info">
+            <p>INFINITY ACCESS</p>
+            <h2 id="usernameDisplay">USER</h2>
+          </div>
+        </div>
+        <button class="header-btn" id="notificationBtn">
+          <i class="fa-solid fa-bell"></i>
+          <div class="notification-badge"></div>
+        </button>
+      </header>
+
+      <div class="dashboard-grid">
+        <div class="main-panel">
+          <div class="hero-card">
+            <div class="hero-content">
+              <div class="status-badge" id="statusBadge">
+                <i class="fa-solid fa-satellite-dish"></i> ONLINE
+              </div>
+              <div class="balance-section">
+                <h3 style="font-size:10px; color:#8899a6; margin-bottom:5px; letter-spacing: 2px;">SYSTEM VERSION</h3>
+                <div class="amount">V.1.0</div>
+              </div>
+              <div class="hero-stats">
+                <div class="h-stat"><span>REMAINING</span><strong id="userCount">30</strong></div>
+                <div class="h-stat"><span>LATENCY</span><strong id="pingValue" style="color:var(--dash-secondary);">12ms</strong></div>
+                <div class="h-stat"><span>EXPIRATION</span><strong id="expDays" style="color:var(--dash-primary);">30D</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-header">
+            <i class="fa-solid fa-bolt section-icon"></i>
+            <div class="section-title">LATEST INTEL</div>
+            <div class="line-deco"></div>
+          </div>
+
+          <div class="news-wrapper">
+            <div class="news-card">
+              <img src="https://files.catbox.moe/nu2azr.jpg" alt="News 1">
+              <div class="card-overlay">
+                <div class="card-title">Infinity Crasher</div>
+                <div class="card-sub">© DEV BY @VYNNSTORE</div>
+              </div>
+            </div>
+            <div class="news-card">
+              <img src="https://files.catbox.moe/8tvcjv.jpg" alt="News 2">
+              <div class="card-overlay">
+                <div class="card-title">System Patch</div>
+                <div class="card-sub">UPGRADE COMPLETE</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-header">
+            <i class="fa-solid fa-microchip section-icon"></i>
+            <div class="section-title">USER DATA</div>
+            <div class="line-deco"></div>
+          </div>
+
+          <div class="account-grid">
+            <div class="stat-card main">
+              <div class="stat-header">
+                <span class="stat-label">Clearance Level</span>
+                <div class="stat-icon"><i class="fa-solid fa-crown" style="color: gold;"></i></div>
+              </div>
+              <div class="stat-value" style="color: var(--dash-secondary);">VIP ACCESS</div>
+              <div class="stat-bar"><div class="stat-bar-fill" style="width:100%; background:var(--dash-secondary);"></div></div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-label">Firewall</span>
+                <div class="stat-icon"><i class="fa-solid fa-shield-cat"></i></div>
+              </div>
+              <div class="stat-value" style="color:var(--dash-primary);">ACTIVE</div>
+              <div class="stat-bar"><div class="stat-bar-fill" style="width:100%; background:var(--dash-primary);"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="nav-container">
+      <nav class="floating-nav">
+        <a class="nav-link active"><i class="fa-solid fa-border-all"></i></a>
+        <a href="https://t.me/VynnStore" target="_blank" class="nav-link"><i class="fa-brands fa-telegram"></i></a>
+        <a id="logoutBtn" class="nav-link"><i class="
