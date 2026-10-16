@@ -1,0 +1,10 @@
+{
+  "name": "safe-bypass",
+  "version": "1.0.0",
+  "description": "Safelinku & Shortlink Bypass Web Tool",
+  "main": "index.html",
+  "dependencies": {
+    "@sparticuz/chromium": "^121.0.0",
+    "puppeteer-core": "^22.0.0"
+  }
+}
