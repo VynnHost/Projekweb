@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contekan Presentasi</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #090d16 0%, #172033 40%, #293548 70%, #3e4c59 100%);
+            background-attachment: fixed;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 15px;
+            overflow-x: hidden;
+        }
+        .deck-container {
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+        }
+        
+        /* Card Hover Effect yang Jelas */
+        .slide {
+            display: none;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .slide:hover {
+            transform: translateY(-5px);
+            border-color: rgba(96, 165, 250, 0.6);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 25px rgba(96, 165, 250, 0.3);
+        }
+        .slide.active {
+            display: block;
+        }
+
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 8px;
+        }
+        .slide-number {
+            font-size: 11px;
+            font-weight: 700;
+            color: #93c5fd;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Button Animation & Bounce Effect yang Kelihatan Banget */
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            width: 32px;
+            height: 32px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s ease, background 0.2s ease, box-shadow 0.2s ease;
+        }
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+        }
+        .nav-btn:active {
+            transform: scale(0.78);
+            background: rgba(96, 165, 250, 0.6);
+        }
+
+        .counter {
+            font-size: 12px;
+            color: #cbd5e1;
+            font-weight: 500;
+            margin: 0 4px;
+        }
+        h2 {
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        p, li {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #f1f5f9;
+        }
+        ul {
+            padding-left: 18px;
+            margin-top: 4px;
+        }
+        li {
+            margin-bottom: 4px;
+        }
+        .speech-box {
+            background: rgba(255, 255, 255, 0.08);
+            border-left: 4px solid #60a5fa;
+            padding: 10px 12px;
+            border-radius: 10px;
+            margin-top: 12px;
+            font-style: italic;
+            color: #e2e8f0;
+            font-size: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dots-container {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 15px;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        .dot.active {
+            background: #60a5fa;
+            width: 20px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="deck-container" id="swipeArea">
+    
+    <!-- Slide 1 -->
+    <div class="slide active" id="slide-0">
+        <div class="slide-header">
+            <span class="slide-number">Langkah 01</span>
+            <div class="nav-controls">
+                <button class="nav-btn" onclick="goToSlide(-1)">‹</button>
+                <span class="counter">1 / 6</span>
+                <button class="nav-btn" onclick="goToSlide(1)">›</button>
+            </div>
+        </div>
+        <h2>Pembukaan</h2>
+        <p>Berdiri tegak, senyum, lihat sekeliling</p>
+        <div class="speech-box">
+            💬 "Assalamu'alaikum Warahmatullahi Wabarakatuh. Selamat pagi Bu Guru dan teman-teman."
+        </div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="slide" id="slide-1">
+        <div class="slide-header">
+            <span class="slide-number">Langkah 02</span>
+            <div class="nav-controls">
+                <button class="nav-btn" onclick="goToSlide(-1)">‹</button>
+                <span class="counter">2 / 6</span>
+                <button class="nav-btn" onclick="goToSlide(1)">›</button>
+            </div>
+        </div>
+        <h2>Merumuskan Masalah</h2>
+        <p>Fokus pengamatan:</p>
+        <div class="speech-box">
+            💬 "Masalah yang kita cari tahu hari ini: Gimana sih kebiasaan anak-anak kelas 8 kalau ngobrol di sekolah?"
+        </div>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="slide" id="slide-2">
+        <div class="slide-header">
+            <span class="slide-number">Langkah 03</span>
+            <div class="nav-controls">
+                <button class="nav-btn" onclick="goToSlide(-1)">‹</button>
+                <span class="counter">3 / 6</span>
+                <button class="nav-btn" onclick="goToSlide(1)">›</button>
+            </div>
+        </div>
+        <h2>Mencari Informasi</h2>
+        <p>Cara mengumpulkan data:</p>
+        <ul>
+            <li>Turun langsung ke lapangan / kantin.</li>
+            <li>Mantengin obrolan anak-anak pas jam istirahat.</li>
+            <li>Nanya-nanya santai ke teman seangkatan.</li>
+        </ul>
+        <div class="speech-box">
+            💬 "Gimana cara kita nyarinya? Kita amati langsung ke lapangan."
+        </div>
+    </div>
+
+    <!-- Slide 4 -->
+    <div class="slide" id="slide-3">
+        <div class="slide-header">
+            <span class="slide-number">Langkah 04 & 05</span>
+            <div class="nav-controls">
+                <button class="nav-btn" onclick="goToSlide(-1)">‹</button>
+                <span class="counter">4 / 6</span>
+                <button class="nav-btn" onclick="goToSlide(1)">›</button>
+            </div>
+        </div>
+        <h2>Hasil Penelitian</h2>
+        <ul>
+            <li>Di kelas / ada guru: Pakai bahasa Indonesia yang sopan dan rapi.</li>
+            <li>Jam istirahat: Campur-campur (bahasa daerah, gaul, disingkat ~65%).</li>
+        </ul>
+        <div class="speech-box">
+            💬 "Nah, dari hasil pengamatan dan info yang kita kumpulin..."
+        </div>
+    </div>
+
+    <!-- Slide 5 -->
+    <div class="slide" id="slide-4">
+        <div class="slide-header">
+            <span class="slide-number">Langkah 06</span>
+            <div class="nav-controls">
+                <button class="nav-btn" onclick="goToSlide(-1)">‹</button>
+                <span class="counter">5 / 6</span>
+                <button class="nav-btn" onclick="goToSlide(1)">›</button>
+            </div>
+        </div>
+        <h2>Kesimpulan</h2>
+        <ul>
+            <li>Bahasa anak-anak di sekolah itu fleksibel.</li>
+            <li>Asyik buat ngobrol santai, tapi tetap harus tahu kapan pakai bahasa yang sopan.</li>
+        </ul>
+        <div class="speech-box">
+            💬 "Jadi, kesimpulannya bahasa kita fleksibel tapi tetap tahu tempat."
+        </div>
+    </div>
+
+    <!-- Slide 6 -->
+    <div class="slide" id="slide-5">
+        <div class="slide-header">
+            <span class="slide-number">Langkah 07</span>
+            <div class="nav-controls">
+                <button class="nav-btn" onclick="goToSlide(-1)">‹</button>
+                <span class="counter">6 / 6</span>
+                <button class="nav-btn" onclick="goToSlide(1)">›</button>
+            </div>
+        </div>
+        <h2>Penutup</h2>
+        <p>Mengakhiri presentasi dengan salam.</p>
+        <div class="speech-box">
+            💬 "Sekian dari saya, terima kasih.<br>Wassalamu'alaikum Warahmatullahi Wabarakatuh."
+        </div>
+    </div>
+
+    <!-- Indikator Titik -->
+    <div class="dots-container">
+        <div class="dot active" id="dot-0"></div>
+        <div class="dot" id="dot-1"></div>
+        <div class="dot" id="dot-2"></div>
+        <div class="dot" id="dot-3"></div>
+        <div class="dot" id="dot-4"></div>
+        <div class="dot" id="dot-5"></div>
+    </div>
+</div>
+
+<script>
+    let current = 0;
+    const total = 6;
+
+    // Fungsi Suara Klik Aman & Stabil (Menggunakan Data URI Audio Pendek)
+    const clickAudio = new Audio("data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJ_x8_W697T5uPew+bn3tfn4+fb5+fn5+fn5+fn5+fn5+fn5");
+
+    function playClickSound() {
+        try {
+            clickAudio.currentTime = 0;
+            clickAudio.play().catch(() => {});
+        } catch (e) {}
+    }
+
+    function goToSlide(dir) {
+        playClickSound();
+        
+        document.getElementById('slide-' + current).classList.remove('active');
+        document.getElementById('dot-' + current).classList.remove('active');
+        
+        current += dir;
+        
+        if (current >= total) {
+            current = 0;
+        } else if (current < 0) {
+            current = total - 1;
+        }
+        
+        document.getElementById('slide-' + current).classList.add('active');
+        document.getElementById('dot-' + current).classList.add('active');
+    }
+
+    // Fitur Swipe Layar
+    let startX = 0;
+    const swipeArea = document.getElementById('swipeArea');
+
+    swipeArea.addEventListener('touchstart', e => {
+        startX = e.changedTouches[0].screenX;
+    });
+
+    swipeArea.addEventListener('touchend', e => {
+        let endX = e.changedTouches[0].screenX;
+        if (endX < startX - 40) {
+            goToSlide(1);  
+        } else if (endX > startX + 40) {
+            goToSlide(-1); 
+        }
+    });
+</script>
+
+</body>
+</html>
