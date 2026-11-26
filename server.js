@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 2001;
+const PORT = process.env.PORT || 3000;
 
 // Middleware untuk parsing JSON dan URL-encoded data
 app.use(express.json());
@@ -28,7 +28,8 @@ app.get('/users', (req, res) => {
     });
 });
 
-// Menjalankan server pada port yang ditentukan panel atau 2001
+// Menjalankan server pada port yang ditentukan panel atau 3000
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
